@@ -1,6 +1,7 @@
 module GenderInference
 
 using DataDeps
+using Logging
 
 function __init__()
     register(DataDep(
@@ -11,6 +12,8 @@ function __init__()
         post_fetch_method=file->run(`unzip $file`)
     ))
 
+    @info "Genderating name => gender dict, this might take a sec"
+    const NAMES = _generate_names()
 end
 
 include("data_management.jl")

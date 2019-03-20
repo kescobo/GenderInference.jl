@@ -1,4 +1,4 @@
-function update_genders!(d::Dict, name, year, gender, n)
+function _update_genders!(d::Dict, name, year, gender, n)
     if !haskey(d, name)
         d[name] = Dict{Int, Dict}()
     end
@@ -11,7 +11,7 @@ function update_genders!(d::Dict, name, year, gender, n)
 end
 
 
-function generate_names()
+function _generate_names_dict()
     datfolder = datadep"US Census - names"
     genders = Dict{String, Dict}()
 
@@ -26,7 +26,7 @@ function generate_names()
 
             n = parse(Int, n)
 
-            update_genders!(genders, name, year, gender, n)
+            _update_genders!(genders, name, year, gender, n)
         end
 
     end
