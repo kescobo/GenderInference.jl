@@ -1,19 +1,27 @@
-function _update_genders!(d::Dict, name, year, gender, n)
-    if !haskey(d, name)
-        d[name] = Dict{Int, Dict}()
-    end
-    if !haskey(d[name], year)
-        d[name][year] = Dict{Symbol, Int}()
-    end
-    haskey(d[name][year], gender) && error("duplicate $gender entry for $name $year")
+register(DataDep(
+    "US Census - names",
+    """US Census data, 1880-2017.
+        https://catalog.data.gov/dataset/baby-names-from-social-security-card-applications-national-level-data""",
+    "https://www.ssa.gov/oact/babynames/names.zip",
+    post_fetch_method=file->run(`unzip $file`)
+    ))
 
-    d[name][year][gender] = n
+function _update_genders!(gender_dict::Dict, name, year, gender, n)
+    if !haskey(gender_dict, name)
+        gender_dict[name] = Dict{Int, Dict}()
+    end
+    if !haskey(gender_dict[name], year)
+        gender_dict[name][year] = Dict{Symbol, Int}()
+    end
+    haskey(gender_dict[name][year], gender) && error("duplicate $gender entry for $name $year")
+
+    gender_dict[name][year][gender] = n
 end
 
 
 function _generate_names_dict()
     datfolder = datadep"US Census - names"
-    genders = Dict{String, Dict}()
+    gender_dict = Dict{String, Dict}()
 
     for y in filter(f-> occursin(r"^yob\d{4}", f), readdir(datfolder))
         year = match(r"yob(\d{4})\.txt", y).captures[1] |> x -> parse(Int, x)
@@ -26,9 +34,28 @@ function _generate_names_dict()
 
             n = parse(Int, n)
 
-            _update_genders!(genders, name, year, gender, n)
+            _update_genders!(gender_dict, name, year, gender, n)
         end
 
     end
-    return genders
+    return gender_dict
 end
+
+function _resolve_names!(gender_dict)
+    for name in keys(gender_dict)
+        for year in keys(gender_dict[name])
+            if !haskey(gender_dict[name][year], :male)
+                gender_dict[name][year][:male] = 0
+            end
+            if !haskey(gender_dict[name][year], :female)
+                gender_dict[name][year][:female] = 0
+            end
+        end
+    end
+
+end
+
+@info "Genderating name => gender dict, this might take a sec"
+
+const NAMES = _generate_names_dict()
+_resolve_names!(NAMES)
