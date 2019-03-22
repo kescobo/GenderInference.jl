@@ -11,7 +11,7 @@ end
 function gendercount(name::AbstractString, year::Int)
     if year < 1880 || year > 2017
         @debug "Database only has years from 1880-2017" maxlog = 1
-        return (missing, missing)
+        return (femal=missing, male=missing)
     end
 
     namedict = _getname(name)
@@ -39,15 +39,17 @@ end
 
 function gendercount(name::AbstractString)
     namedict = _getname(name)
-
+    length(namedict) == 0 && return (female=missing,male=missing)
     f = sum(skipmissing(namedict[year][:female] for year in keys(namedict)))
     m = sum(skipmissing(namedict[year][:male] for year in keys(namedict)))
-    return (f, m)
+    return (female=f,male=m)
 end
 
 function percentfemale(name, years=1880:2017)
     (f, m) = gendercount(name, years)
-    return f / (f + m)
+    total = f+m
+    total == 0 && return missing
+    return f / total
 end
 
 percentmale(name, years=1880:2017) = 1. - percentfemale(name, years)
@@ -55,6 +57,7 @@ percentmale(name, years=1880:2017) = 1. - percentfemale(name, years)
 function gender(name::AbstractString, year; threshold::AbstractFloat=0.8)
     0.5 ≤ threshold ≤ 1. || raise(ArgumentError("Threshold must be between 0.5 and 1"))
     (f, m) = gendercount(name, year)
+    f + m == 0. && return missing
 
     pf = percentfemale(name, year)
 
