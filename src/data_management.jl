@@ -7,6 +7,7 @@ register(DataDep(
     ))
 
 function _update_genders!(gender_dict::Dict, name, year, gender, n)
+    name = lowercase(name)
     if !haskey(gender_dict, name)
         gender_dict[name] = Dict{Int, Dict}()
     end
