@@ -20,8 +20,7 @@ function _update_genders!(gender_dict::Dict, name, year, gender, n)
 end
 
 
-function _generate_names_dict()
-    datfolder = datadep"US Census - names"
+function _generate_names_dict(datfolder)
     gender_dict = Dict{String, Dict}()
 
     for y in filter(f-> occursin(r"^yob\d{4}", f), readdir(datfolder))
@@ -56,7 +55,16 @@ function _resolve_names!(gender_dict)
 
 end
 
-@info "Genderating name => gender dict, this might take a sec"
+function _get_names_dict(datfolder)
+    if isfile(joinpath(datfolder, "names.bson"))
+        return BSON.load(joinpath(datfolder, "names.bson"))
+    else
+        @info "Genderating name to gender dict, this might take a sec (but should only happen once)"
+        names = _generate_names_dict(datfolder)
+        _resolve_names!(names)
+        bson(joinpath(datfolder, "names.bson"), names)
+        return names
+    end
+end
 
-const NAMES = _generate_names_dict()
-_resolve_names!(NAMES)
+const NAMES = _get_names_dict(datadep"US Census - names")

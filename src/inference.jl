@@ -48,7 +48,7 @@ end
 function percentfemale(name, years=1880:2017)
     (f, m) = gendercount(name, years)
     total = f+m
-    total == 0 && return missing
+    (ismissing(total) || total == 0) && return missing
     return f / total
 end
 
