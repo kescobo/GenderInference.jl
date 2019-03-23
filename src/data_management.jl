@@ -59,7 +59,7 @@ function _get_names_dict(datfolder)
     if isfile(joinpath(datfolder, "names.bson"))
         return BSON.load(joinpath(datfolder, "names.bson"))
     else
-        @info "Genderating name to gender dict, this might take a sec (but should only happen once)"
+        @info "Generating name to gender dict, this might take a bit (but should only happen once)"
         names = _generate_names_dict(datfolder)
         _resolve_names!(names)
         bson(joinpath(datfolder, "names.bson"), names)
