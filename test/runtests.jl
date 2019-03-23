@@ -7,6 +7,8 @@ using Test
     @test gender("Kevin") == :male
     @test gender("rachel") == :female
     @test gender("foo") === missing
+    @test gender("casey") == :male
+    @test gender("casey", threshold=0.8) === missing
 
     @test typeof(gendercount("stefan")) <: NamedTuple{(:female,:male), Tuple{Int,Int}}
     @test typeof(gendercount("bar")) <: NamedTuple{(:female,:male), Tuple{Int,Int}}

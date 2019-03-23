@@ -39,7 +39,7 @@ end
 
 function gendercount(name::AbstractString)
     namedict = _getname(name)
-    length(namedict) == 0 && return (female=missing,male=missing)
+    length(namedict) == 0 && return (female=0,male=0)
     f = sum(skipmissing(namedict[year][:female] for year in keys(namedict)))
     m = sum(skipmissing(namedict[year][:male] for year in keys(namedict)))
     return (female=f,male=m)
@@ -54,12 +54,11 @@ end
 
 percentmale(name, years=1880:2017) = 1. - percentfemale(name, years)
 
-function gender(name::AbstractString, year; threshold::AbstractFloat=0.8)
+function gender(name::AbstractString, year; threshold::AbstractFloat=0.5)
     0.5 ≤ threshold ≤ 1. || raise(ArgumentError("Threshold must be between 0.5 and 1"))
-    (f, m) = gendercount(name, year)
-    f + m == 0. && return missing
-
     pf = percentfemale(name, year)
+
+    ismissing(pf) && return missing
 
     if pf > threshold
         return :female
@@ -70,4 +69,4 @@ function gender(name::AbstractString, year; threshold::AbstractFloat=0.8)
     end
 end
 
-gender(name::AbstractString; threshold::AbstractFloat=0.8) = gender(name, 1880:2017, threshold=threshold)
+gender(name::AbstractString; threshold::AbstractFloat=0.5) = gender(name, 1880:2017, threshold=threshold)
