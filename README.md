@@ -1,5 +1,7 @@
 # Gender Inference
 
+[![Build Status](https://travis-ci.com/kescobo/GenderInference.jl.svg?branch=master)](https://travis-ci.com/kescobo/GenderInference.jl)
+
 A package to infer a person's gender based on their first name,
 with inspiration from the [Gender R package][1].
 
