@@ -17,4 +17,6 @@ using Test
     @test typeof(percentmale("Jane")) <: AbstractFloat
     @test percentfemale("Baz") === missing
     @test percentmale("Far") === missing
+
+    @test gendercount("Julia", 1850:1900) == (female=missing, male=missing)
 end

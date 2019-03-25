@@ -11,7 +11,7 @@ end
 function gendercount(name::AbstractString, year::Int)
     if year < 1880 || year > 2017
         @debug "Database only has years from 1880-2017" maxlog = 1
-        return (femal=missing, male=missing)
+        return (female=missing, male=missing)
     end
 
     namedict = _getname(name)
