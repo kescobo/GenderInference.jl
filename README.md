@@ -5,6 +5,8 @@
 A package to infer a person's gender based on their first name,
 with inspiration from the [Gender R package][1].
 
+See also [NameToGender.jl][6]
+
 ## Datasets
 
 The raw data set used in this package are available here:
@@ -110,3 +112,4 @@ julia> gendercount("kevin", 1900)
 [3]: http://www.cs.cmu.edu/afs/cs/project/ai-repository/ai/areas/nlp/corpora/names/0.html
 [4]: https://usa.ipums.org/
 [5]: https://github.com/oxinabox/DataDeps.jl
+[6]: https://github.com/JuliaText/NameToGender.jl
