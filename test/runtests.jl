@@ -18,5 +18,5 @@ using Test
     @test percentfemale("Baz") === missing
     @test percentmale("Far") === missing
 
-    @test gendercount("Julia", 1850:1900) == (female=missing, male=missing)
+    @test gendercount("Julia", 1850:1900) === (female=missing, male=missing)
 end
