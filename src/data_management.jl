@@ -1,11 +1,3 @@
-register(DataDep(
-    "US Census - names",
-    """US Census data, 1880-2017.
-        https://catalog.data.gov/dataset/baby-names-from-social-security-card-applications-national-level-data""",
-    "https://www.ssa.gov/oact/babynames/names.zip",
-    post_fetch_method=file->run(`unzip $file`)
-    ))
-
 function _update_genders!(gender_dict::Dict, name, year, gender, n)
     name = lowercase(name)
     if !haskey(gender_dict, name)
@@ -67,4 +59,4 @@ function _get_names_dict(datfolder)
     end
 end
 
-const NAMES = _get_names_dict(datadep"US Census - names")
+# const NAMES = _get_names_dict(datadep"US Census - names")
