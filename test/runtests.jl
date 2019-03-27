@@ -13,10 +13,10 @@ using Test
     @test typeof(gendercount("stefan")) <: NamedTuple{(:female,:male), Tuple{Int,Int}}
     @test typeof(gendercount("bar")) <: NamedTuple{(:female,:male), Tuple{Int,Int}}
 
-    @test typeof(percentfemale("Viral")) <: AbstractFloat
-    @test typeof(percentmale("Jane")) <: AbstractFloat
-    @test percentfemale("Baz") === missing
-    @test percentmale("Far") === missing
+    @test typeof(proportionfemale("Viral")) <: AbstractFloat
+    @test typeof(proportionmale("Jane")) <: AbstractFloat
+    @test proportionfemale("Baz") === missing
+    @test proportionmale("Far") === missing
 
     @test gendercount("Julia", 1850:1900) === (female=missing, male=missing)
 end

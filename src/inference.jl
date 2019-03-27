@@ -45,18 +45,18 @@ function gendercount(name::AbstractString)
     return (female=f,male=m)
 end
 
-function percentfemale(name, years=1880:2017)
+function proportionfemale(name, years=1880:2017)
     (f, m) = gendercount(name, years)
     total = f+m
     (ismissing(total) || total == 0) && return missing
     return f / total
 end
 
-percentmale(name, years=1880:2017) = 1. - percentfemale(name, years)
+proportionmale(name, years=1880:2017) = 1. - proportionfemale(name, years)
 
 function gender(name::AbstractString, year; threshold::AbstractFloat=0.5)
     0.5 ≤ threshold ≤ 1. || raise(ArgumentError("Threshold must be between 0.5 and 1"))
-    pf = percentfemale(name, year)
+    pf = proportionfemale(name, year)
 
     ismissing(pf) && return missing
 

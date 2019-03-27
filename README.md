@@ -53,13 +53,13 @@ julia> gendercount("Viral", [1981, 1987, 1988])
 (female = 0, male = 21)
 ```
 
-You can also get the percent of records that are male or female.
+You can also get the proportion of records that are male or female.
 
 ```julia
-julia> percentfemale("Jane")
+julia> proportionfemale("Jane")
 0.9969477072813601
 
-julia> percentmale("Lyndon", 1980:2017)
+julia> proportionmale("Lyndon", 1980:2017)
 0.9356575237118687
 ```
 
@@ -87,7 +87,7 @@ missing
 If you ask for a year that is unavailable, most functions will return `missing`
 
 ```julia
-julia> percentfemale("Kristofer", 2019)
+julia> proportionfemale("Kristoffer", 2019)
 missing
 
 julia> gender("simon", 1850)
@@ -96,10 +96,10 @@ missing
 
 If there are no entries for a name, but the year is between 1880 and 2017,
 `gendercount` will give zeros,
-but the `percent{gender}` functions will be missing.
+but the `proportion{gender}` functions will be missing.
 
 ```julia
-julia> percentfemale("kevin", 1900)
+julia> proportionfemale("kevin", 1900)
 missing
 
 julia> gendercount("kevin", 1900)
