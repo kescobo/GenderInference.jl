@@ -4,6 +4,8 @@
 
 A package to infer a person's gender based on their first name,
 with inspiration from the [Gender R package][1].
+For now, the data is limited to US names,
+but hopefully that will change.
 
 See also [NameToGender.jl][6]
 
