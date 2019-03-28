@@ -59,4 +59,4 @@ function _get_names_dict(datfolder)
     end
 end
 
-# const NAMES = _get_names_dict(datadep"US Census - names")
+const NAMES = _get_names_dict(datadep"US Census - names")
