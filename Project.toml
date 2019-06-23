@@ -1,0 +1,8 @@
+name = "GenderInference"
+uuid = "fce5760c-2382-526d-a3fa-df178b5473bd"
+authors = "Kevin Bonham, PhD <kevbonham@gmail.com>"
+
+
+[deps]
+BSON = "fbb218c0-5317-5bc6-957e-2ee96dd4b1f0"
+DataDeps = "124859b0-ceae-595e-8997-d05f6a7a8dfe"
