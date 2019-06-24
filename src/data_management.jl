@@ -1,19 +1,42 @@
-function _update_genders!(gender_dict::Dict, name, year, gender, n)
-    name = lowercase(name)
-    if !haskey(gender_dict, name)
-        gender_dict[name] = Dict{Int, Dict}()
-    end
-    if !haskey(gender_dict[name], year)
-        gender_dict[name][year] = Dict{Symbol, Int}()
-    end
-    haskey(gender_dict[name][year], gender) && error("duplicate $gender entry for $name $year")
+struct NameDataset
+    firstyear::Int32
+    lastyear::Int32
+    namesdict::Dict
 
-    gender_dict[name][year][gender] = n
+    NameDataset(fy, ly) = new(Int32(fy), Int32(ly), Dict())
+end
+
+_years(nds::NameDataset) = (nds.firstyear, nds.lastyear)
+getindex(nds::NameDataset, key::AbstractString) = Base.getindex(nds.namesdict, lowercase(key))
+haskey(nds::NameDataset, name::AbstractString) = Base.haskey(nds.namesdict, lowercase(name))
+
+# check to prevent overwriting
+function addname(nds::NameDataset, name::AbstractString)
+    haskey(nds, name) && return true
+    nds.namesdict[lowercase(name)] = (female=spzeros(Int32, nds.lastyear), male=spzeros(Int32, nds.lastyear))
 end
 
 
-function _generate_names_dict(datfolder)
-    gender_dict = Dict{String, Dict}()
+function _update_genders!(nds::NameDataset, name, year, gender, n)
+    firstyear, lastyear = _years(nds)
+    firstyear <= year <= lastyear || throw(ArgumentError("This dataset only has years $firstyear to $lastyear"))
+    name = lowercase(name)
+    addname(nds, name)
+    nds[name][gender][year] > 0 && error("duplicate $gender entry for $name $year")
+
+    nds[name][gender][year] = n
+end
+
+
+struct RawDataSet{T} end
+
+RawDataSet(s::String) = RawDataSet{Symbol(s)}()
+RawDataSet(s::Symbol) = RawDataSet{s}()
+
+parsedataset(datfolder, ::RawDataSet) = error("Unknown Dataset")
+
+function parsedataset(datfolder, ::RawDataSet{:USCensus})
+    nds = NameDataset(1880, 2017)
 
     for y in filter(f-> occursin(r"^yob\d{4}", f), readdir(datfolder))
         year = match(r"yob(\d{4})\.txt", y).captures[1] |> x -> parse(Int, x)
@@ -24,39 +47,14 @@ function _generate_names_dict(datfolder)
             gender in ("M", "F") || error("Gender $gender not recognized")
             gender == "F" ? gender = :female : gender = :male
 
-            n = parse(Int, n)
+            n = parse(Int32, n)
 
-            _update_genders!(gender_dict, name, year, gender, n)
+            _update_genders!(nds, name, year, gender, n)
         end
 
     end
-    return gender_dict
+    return nds
 end
 
-function _resolve_names!(gender_dict)
-    for name in keys(gender_dict)
-        for year in keys(gender_dict[name])
-            if !haskey(gender_dict[name][year], :male)
-                gender_dict[name][year][:male] = 0
-            end
-            if !haskey(gender_dict[name][year], :female)
-                gender_dict[name][year][:female] = 0
-            end
-        end
-    end
 
-end
-
-function _get_names_dict(datfolder)
-    if isfile(joinpath(datfolder, "names.bson"))
-        return BSON.load(joinpath(datfolder, "names.bson"))
-    else
-        @info "Generating name to gender dict, this might take a bit (but should only happen once)"
-        names = _generate_names_dict(datfolder)
-        _resolve_names!(names)
-        bson(joinpath(datfolder, "names.bson"), names)
-        return names
-    end
-end
-
-const NAMES = _get_names_dict(datadep"US Census - names")
+const NAMES = parsedataset(datadep"US Census - names", RawDataSet("USCensus"))

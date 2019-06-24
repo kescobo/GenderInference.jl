@@ -10,6 +10,9 @@ export
 
 using DataDeps
 using BSON
+using SparseArrays
+
+import Base: getindex, haskey
 
 include("data_registrations.jl")
 include("data_management.jl")
