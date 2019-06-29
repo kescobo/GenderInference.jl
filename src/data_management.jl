@@ -36,7 +36,7 @@ RawDataSet(s::Symbol) = RawDataSet{s}()
 parsedataset(datfolder, ::RawDataSet) = error("Unknown Dataset")
 
 function parsedataset(datfolder, ::RawDataSet{:USCensus})
-    nds = NameDataset(1880, 2017)
+    nds = NameDataset(1880, 2018)
 
     for y in filter(f-> occursin(r"^yob\d{4}", f), readdir(datfolder))
         year = match(r"yob(\d{4})\.txt", y).captures[1] |> x -> parse(Int, x)
