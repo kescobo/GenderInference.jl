@@ -5,5 +5,3 @@ register(DataDep(
     "https://www.ssa.gov/oact/babynames/names.zip",
     post_fetch_method=file->run(`unzip $file`)
     ))
-
-datadep"US Census - names"
