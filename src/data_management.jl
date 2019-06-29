@@ -6,7 +6,13 @@ struct NameDataset
     NameDataset(fy, ly) = new(Int32(fy), Int32(ly), Dict())
 end
 
-_years(nds::NameDataset) = (nds.firstyear, nds.lastyear)
+firstyear(nds::NameDataset) = nds.firstyear
+lastyear(nds::NameDataset) = nds.lastyear
+
+_years(nds::NameDataset) = (firstyear(nds), lastyear(nds))
+
+
+
 getindex(nds::NameDataset, key::AbstractString) = Base.getindex(nds.namesdict, lowercase(key))
 haskey(nds::NameDataset, name::AbstractString) = Base.haskey(nds.namesdict, lowercase(name))
 
@@ -39,7 +45,7 @@ function parsedataset(datfolder, ::RawDataSet{:USCensus})
     nds = NameDataset(1880, 2018)
 
     for y in filter(f-> occursin(r"^yob\d{4}", f), readdir(datfolder))
-        year = match(r"yob(\d{4})\.txt", y).captures[1] |> x -> parse(Int, x)
+        year = match(r"yob(\d{4})\.txt", y).captures[1] |> x -> parse(Int32, x)
 
         for line in eachline(joinpath(datfolder, y))
             (name, gender, n) = split(line, ',')
