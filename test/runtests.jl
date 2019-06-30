@@ -1,8 +1,20 @@
 using GenderInference
+import GenderInference: RawDataSet, NameDataset, parsedataset
 using Test
 
+@testset "Data Handling" begin
+    @test typeof(GenderInference.NAMES) <: NameDataset
+
+    unknown_raw = RawDataSet(:test)
+    @test unknown_raw == RawDataSet{:test}()
+    @test unknown_raw == RawDataSet("test")
+
+
+    @test_throws ArgumentError parsedataset("a/path", unknown_raw)
+
+end
+
 @testset "Gender Inference" begin
-    @test typeof(GenderInference.NAMES) <: GenderInference.NameDataset
 
     @test gender("Kevin") == :male
     @test gender("rachel") == :female

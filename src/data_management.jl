@@ -39,7 +39,7 @@ struct RawDataSet{T} end
 RawDataSet(s::String) = RawDataSet{Symbol(s)}()
 RawDataSet(s::Symbol) = RawDataSet{s}()
 
-parsedataset(datfolder, ::RawDataSet) = error("Unknown Dataset")
+parsedataset(datfolder, ::RawDataSet) = throw(ArgumentError("Unknown Dataset"))
 
 function parsedataset(datfolder, ::RawDataSet{:USCensus})
     nds = NameDataset(1880, 2018)
