@@ -1,8 +1,20 @@
 using GenderInference
+import GenderInference: RawDataSet, NameDataset, parsedataset
 using Test
 
+@testset "Data Handling" begin
+    @test typeof(GenderInference.NAMES) <: NameDataset
+
+    unknown_raw = RawDataSet(:test)
+    @test unknown_raw == RawDataSet{:test}()
+    @test unknown_raw == RawDataSet("test")
+
+
+    @test_throws ArgumentError parsedataset("a/path", unknown_raw)
+
+end
+
 @testset "Gender Inference" begin
-    @test typeof(GenderInference.NAMES) <: AbstractDict
 
     @test gender("Kevin") == :male
     @test gender("rachel") == :female
@@ -10,13 +22,13 @@ using Test
     @test gender("casey") == :male
     @test gender("casey", threshold=0.8) === missing
 
-    @test typeof(gendercount("stefan")) <: NamedTuple{(:female,:male), Tuple{Int,Int}}
-    @test typeof(gendercount("bar")) <: NamedTuple{(:female,:male), Tuple{Int,Int}}
+    @test typeof(gendercount("stefan")) <: NamedTuple{(:female,:male), Tuple{T,T}} where T <: Integer
+    @test typeof(gendercount("bar")) <: NamedTuple{(:female,:male), Tuple{T,T}} where T <: Integer
 
-    @test typeof(percentfemale("Viral")) <: AbstractFloat
-    @test typeof(percentmale("Jane")) <: AbstractFloat
-    @test percentfemale("Baz") === missing
-    @test percentmale("Far") === missing
+    @test typeof(proportionfemale("Viral")) <: AbstractFloat
+    @test typeof(proportionmale("Jane")) <: AbstractFloat
+    @test proportionfemale("Foo") === missing
+    @test proportionmale("Gadz") === missing
 
     @test gendercount("Julia", 1850:1900) === (female=missing, male=missing)
 end

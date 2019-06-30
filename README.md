@@ -3,21 +3,27 @@
 [![Build Status](https://travis-ci.com/kescobo/GenderInference.jl.svg?branch=master)](https://travis-ci.com/kescobo/GenderInference.jl)
 
 A package to infer a person's gender based on their first name,
-with inspiration from the [Gender R package][1].
+with inspiration from the [Gender R package](https://www.r-project.org/nosvn/pandoc/gender.html).
+For now, the data is limited to US names,
+but hopefully that will change.
 
-See also [NameToGender.jl][6]
+Please note: this package only deals with gender binaries.
+For a critique and discussion about why this might not be a good idea,
+see here
+
+See also [NameToGender.jl](https://github.com/JuliaText/NameToGender.jl)
 
 ## Datasets
 
 The raw data set used in this package are available here:
 
-- [Social Security Administration's baby names by year][2]
+- [Social Security Administration's baby names by year](http://catalog.data.gov/dataset/baby-names-from-social-security-card-applications-national-level-data)
 
 
 ### Not yet integrated
 
-- [Mark Kantrowitz's name corpus][3]
-- [IPUMS Census data][4]
+- [Mark Kantrowitz's name corpus](http://www.cs.cmu.edu/afs/cs/project/ai-repository/ai/areas/nlp/corpora/names/0.html)
+- [IPUMS Census data](https://usa.ipums.org/)
 
 ## Usage
 
@@ -26,7 +32,7 @@ The raw data set used in this package are available here:
 The first time you load the package,
 it will download and process the data into a julia `Dict`.
 This can take some time, but should only need to be done once
-thanks to [`DataDeps.jl`][5].
+thanks to [`DataDeps.jl`](https://github.com/oxinabox/DataDeps.jl).
 
 ```julia
 julia> using GenderInference
@@ -53,13 +59,13 @@ julia> gendercount("Viral", [1981, 1987, 1988])
 (female = 0, male = 21)
 ```
 
-You can also get the percent of records that are male or female.
+You can also get the proportion of records that are male or female.
 
 ```julia
-julia> percentfemale("Jane")
+julia> proportionfemale("Jane")
 0.9969477072813601
 
-julia> percentmale("Lyndon", 1980:2017)
+julia> proportionmale("Lyndon", 1980:2017)
 0.9356575237118687
 ```
 
@@ -87,7 +93,7 @@ missing
 If you ask for a year that is unavailable, most functions will return `missing`
 
 ```julia
-julia> percentfemale("Kristofer", 2019)
+julia> proportionfemale("Kristoffer", 2019)
 missing
 
 julia> gender("simon", 1850)
@@ -96,20 +102,12 @@ missing
 
 If there are no entries for a name, but the year is between 1880 and 2017,
 `gendercount` will give zeros,
-but the `percent{gender}` functions will be missing.
+but the `proportion{gender}` functions will be missing.
 
 ```julia
-julia> percentfemale("kevin", 1900)
+julia> proportionfemale("kevin", 1900)
 missing
 
 julia> gendercount("kevin", 1900)
 (female = 0, male = 0)
 ```
-
-
-[1]: https://www.r-project.org/nosvn/pandoc/gender.html
-[2]: http://catalog.data.gov/dataset/baby-names-from-social-security-card-applications-national-level-data
-[3]: http://www.cs.cmu.edu/afs/cs/project/ai-repository/ai/areas/nlp/corpora/names/0.html
-[4]: https://usa.ipums.org/
-[5]: https://github.com/oxinabox/DataDeps.jl
-[6]: https://github.com/JuliaText/NameToGender.jl

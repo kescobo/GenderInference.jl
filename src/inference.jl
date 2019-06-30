@@ -1,62 +1,34 @@
-function _getname(name)
-    name = lowercase(name)
-    if !in(name, keys(NAMES))
-        @debug "$name is not a name I recognize" maxlog = 1
-        return Dict{String, Dict}()
-    end
-    return NAMES[name]
-end
-
-
-function gendercount(name::AbstractString, year::Int)
-    if year < 1880 || year > 2017
-        @debug "Database only has years from 1880-2017" maxlog = 1
+function gendercount(nds::NameDataset, name::AbstractString, years::Union{T, Vector{T}, AbstractRange{T}}) where T <: Integer
+    if any(y-> firstyear(nds) > y || y > lastyear(nds), years)
+        @debug "Database only has years from $(nds.firstyear)-$(nds.lastyear)" maxlog = 1
         return (female=missing, male=missing)
-    end
-
-    namedict = _getname(name)
-    if !in(year, keys(namedict))
-        @debug "No $name born in $year" maxlog = 1
+    elseif !haskey(nds, name)
+        @debug "Database doesn't have name $name"
         return (female=0, male=0)
+    else
+        return (
+            female = sum(nds[name][:female][years]),
+            male   = sum(nds[name][:male][years])
+            )
     end
-
-    f = namedict[year][:female]
-    m = namedict[year][:male]
-    return (female=f, male=m)
 end
 
-function gendercount(name::AbstractString, years::Union{Vector{T}, AbstractRange{T}}) where T <: Int
-    f = 0
-    m = 0
+gendercount(name::AbstractString, years::Union{T, Vector{T}, AbstractRange{T}}) where T <: Integer = gendercount(NAMES, name, years)
+gendercount(nds::NameDataset, name::AbstractString) = gendercount(nds, name, firstyear(nds):lastyear(nds))
+gendercount(name::AbstractString) = gendercount(NAMES, name)
 
-    for year in years
-        c = gendercount(name, year)
-        f += c[:female]
-        m += c[:male]
-    end
-    return (female=f, male=m)
-end
-
-function gendercount(name::AbstractString)
-    namedict = _getname(name)
-    length(namedict) == 0 && return (female=0,male=0)
-    f = sum(skipmissing(namedict[year][:female] for year in keys(namedict)))
-    m = sum(skipmissing(namedict[year][:male] for year in keys(namedict)))
-    return (female=f,male=m)
-end
-
-function percentfemale(name, years=1880:2017)
+function proportionfemale(name, years=1880:2018)
     (f, m) = gendercount(name, years)
     total = f+m
     (ismissing(total) || total == 0) && return missing
     return f / total
 end
 
-percentmale(name, years=1880:2017) = 1. - percentfemale(name, years)
+proportionmale(name, years=1880:2018) = 1. - proportionfemale(name, years)
 
 function gender(name::AbstractString, year; threshold::AbstractFloat=0.5)
     0.5 ≤ threshold ≤ 1. || raise(ArgumentError("Threshold must be between 0.5 and 1"))
-    pf = percentfemale(name, year)
+    pf = proportionfemale(name, year)
 
     ismissing(pf) && return missing
 
