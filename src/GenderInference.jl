@@ -21,7 +21,7 @@ function __init__()
     init_us_census()
 
     # Define global constant
-    @eval const NAMES = parsedataset(datadep"US Census - names", RawDataSet("USCensus"))
+    @eval const USCENSUS = parsedataset(datadep"US Census - names", RawDataSet("USCensus"))
 end
 
 end # module Gender Inference

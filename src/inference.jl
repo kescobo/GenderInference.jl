@@ -13,9 +13,9 @@ function gendercount(nds::NameDataset, name::AbstractString, years::Union{T, Vec
     end
 end
 
-gendercount(name::AbstractString, years::Union{T, Vector{T}, AbstractRange{T}}) where T <: Integer = gendercount(NAMES, name, years)
+gendercount(name::AbstractString, years::Union{T, Vector{T}, AbstractRange{T}}) where T <: Integer = gendercount(USCENSUS, name, years)
 gendercount(nds::NameDataset, name::AbstractString) = gendercount(nds, name, firstyear(nds):lastyear(nds))
-gendercount(name::AbstractString) = gendercount(NAMES, name)
+gendercount(name::AbstractString) = gendercount(USCENSUS, name)
 
 function proportionfemale(name, years=1880:2018)
     (f, m) = gendercount(name, years)

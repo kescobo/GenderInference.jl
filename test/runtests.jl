@@ -3,7 +3,7 @@ import GenderInference: RawDataSet, NameDataset, parsedataset
 using Test
 
 @testset "Data Handling" begin
-    @test typeof(GenderInference.NAMES) <: NameDataset
+    @test typeof(GenderInference.USCENSUS) <: NameDataset
 
     unknown_raw = RawDataSet(:test)
     @test unknown_raw == RawDataSet{:test}()
