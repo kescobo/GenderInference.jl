@@ -61,7 +61,3 @@ function parsedataset(datfolder, ::RawDataSet{:USCensus})
     end
     return nds
 end
-
-
-
-const NAMES = parsedataset(datadep"US Census - names", RawDataSet("USCensus"))
