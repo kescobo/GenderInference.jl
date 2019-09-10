@@ -1,6 +1,6 @@
 # Gender Inference
 
-[![Build Status](https://travis-ci.com/kescobo/GenderInference.jl.svg?branch=master)](https://travis-ci.com/kescobo/GenderInference.jl)
+[![Build Status](https://travis-ci.com/kescobo/GenderInference.jl.svg?branch=master)](https://travis-ci.com/kescobo/GenderInference.jl) [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 
 A package to infer a person's gender based on their first name,
 with inspiration from the [Gender R package](https://www.r-project.org/nosvn/pandoc/gender.html).
