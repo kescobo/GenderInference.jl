@@ -9,7 +9,7 @@ but hopefully that will change.
 
 Please note: this package only deals with gender binaries.
 For a critique and discussion about why this might not be a good idea,
-see here
+[see here](https://ironholds.org/names-gender/).
 
 See also [NameToGender.jl](https://github.com/JuliaText/NameToGender.jl)
 
